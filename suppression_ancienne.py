@@ -16,6 +16,8 @@ def deltemps(nbdd):
 	for i in L:
 		D.append(i)
 	print(D)
+	#WTF ? Pourquoi on fait pas "for i in L" directement ?
+	#Ou meme "for i in c.fetchall()"
 	for i in D:
 		c.execute("DELETE from users where id=?",i)
 		c.execute("DELETE from proc where id=?",i)
