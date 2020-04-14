@@ -16,7 +16,7 @@ def create(nbdd):
     c.execute('''CREATE TABLE disk ( id,total,used,free,percent)''')
     c.execute('''CREATE TABLE proc ( id, nbproc)''')
     c.execute('''CREATE TABLE users ( id, nbusers)''')
-    c.execute('''CREATE TABLE temps ( id, date)''')
+		c.execute('''CREATE TABLE temps ( id, date DATETIME)''') # NL : format DATETIME added
     #c.execute('''CREATE TABLE temps ( id,jour,heure,minute)''')
     ##manque la ram
     bdd.commit()
