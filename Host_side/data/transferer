@@ -1,0 +1,16 @@
+echo $1 >> ./testtransfert1
+
+if [[ `cat ./smph` = "updated" ]]
+then
+	echo "new" > ./smph
+fi
+
+
+if [[ `cat ./smph` == "new" ]]
+then
+	echo "transfert"
+	echo "transfer attempt" > ./smph
+	scp -P44 -i ./RSA_KEY_PI ./testtransfert1 nathanael@192.168.1.81:/home/nathanael/Documents/adminSys/transfert_ssh/ && echo "transfered" > ./smph
+else
+	echo "nothing to do"
+fi

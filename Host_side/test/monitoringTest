@@ -1,0 +1,6 @@
+id=0
+while [ 1 ]
+do
+	ramInfo $id | pushovers
+	sleep 3
+done
