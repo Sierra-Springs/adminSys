@@ -1,0 +1,3 @@
+mv ./testtransfert1 ./testtransfert1_file
+echo "updated" > ./transfert.smph.tmp
+scp -i /home/nathanael/Documents/adminSys/transfert_ssh/RSAKEY/RSA_KEY_SERVER ./transfert.smph.tmp pi@192.168.1.77:/home/pi/Documents/adminSys/data/smph
