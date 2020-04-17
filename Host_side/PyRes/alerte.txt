@@ -1,0 +1,3 @@
+24 mars 2020
+Multiples vulnérabilités dans Microsoft Windows
+/pdf/CERTFR-2020-ALE-009.pdf

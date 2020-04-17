@@ -11,6 +11,7 @@ sys.path.append(os.environ['PyRes'])  # NL : allow import for modules in PyRes (
 from sonde import *
 from stockage import *
 from suppression_ancienne import *
+from mail_faille import *
 
 import time
 
@@ -25,6 +26,8 @@ deltemps(nbdd)
 
 # update by NL (environnment variable)
 id1 = int(sys.argv[1])
+if id1%100==0:
+	faille()
 L=recup()
 stock(L, id1)
 deltemps()

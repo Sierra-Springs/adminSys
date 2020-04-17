@@ -17,16 +17,17 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def mail():
+def mail(liste):
+    txt="Alerte datant du "+liste[0]+" affectant "+liste[1]+". En savoir plus : "+liste[2]
+    sub="Alerte : "+liste[0]+ " : "+liste[1]
     exp="bert.audran@gmail.com"
+    #dest="audran.bert@hotmail.fr"
     dest="nathanael-1999@hotmail.fr"
-    sub="Alerte sécurite!"
     mdp="lol"
     msg=MIMEMultipart()
     msg['From']=exp
     msg['To']=dest
     msg['Subject']=sub
-    txt="Ce mail a été envoyé dans le cadre du projet d'admin sys pour tester l envoie des mails"
     msg.attach(MIMEText(txt))
     mail = smtplib.SMTP('smtp.gmail.com', 587)
     mail.starttls()
@@ -37,26 +38,107 @@ def mail():
 
 def alerte():
     ct=0
-    alert=""
-    target="b'"+'<div class="item cert-alert open">'+chr(92)+"n'"
-
+    html=""
+    st='<div class="item cert-alert open">'+"\n"
+    target=bytes(st, 'utf-8')
     with urllib.request.urlopen("https://www.cert.ssi.gouv.fr/") as url:
         for line in url:
-            ct=ct+1
-            if ct==132:
-                print(line)
             if line==target:
-                print("yes")
-    print(alert)
-    print(target)
-    return True
+                ct=20
+            if ct>11:
+                html=html+line.decode("utf-8")
+            if ct==10:
+                break
+            ct=ct-1
+    alert=[]
+    date=False
+    i=0
+    mot=""
+    while date==False:
+        if (html[i]==">"):
+            if mot=='class="item-date"':
+                date=True
+                i=i+1
+                mot=""
+                while html[i]!="<":
+                    mot=mot+html[i]
+                    i=i+1
+                alert.append(mot)
+        while (html[i]==" ") :
+            mot=""
+            i=i+1
+        mot=mot+html[i]
+        i=i+1
+    titre=False
+    i=0
+    mot=""
+    while titre==False:
+        if (html[i]==">"):
+            if mot=='class="item-title"':
+                titre=True
+                i=i+1
+                while html[i]!=">":
+                    i=i+1
+                mot=""
+                i=i+1
+                while html[i]!="<":
+                    mot=mot+html[i]
+                    i=i+1
+                alert.append(mot)
+        while (html[i]==" ") :
+            mot=""
+            i=i+1
+        mot=mot+html[i]
+        i=i+1
+    lien=False
+    i=0
+    mot=""
+    while lien==False:
+        if (html[i]==" "):
+            if mot=='class="item-link"':
+                lien=True
+                i=i+1
+                while html[i]!="/":
+                    i=i+1
+                mot=""
+                while html[i]!='"':
+                    mot=mot+html[i]
+                    i=i+1
+                alert.append(mot)
+        while (html[i]==" ") :
+            mot=""
+            i=i+1
+        mot=mot+html[i]
+        i=i+1
+    return alert
 
-def recupalerte():
-    return 0
+def recupalerte(l):
+    test=True
+    fic = open('alerte.txt', 'r')
+    anc=[]
+    for line in fic:
+        anc.append(line)
+    if len(anc)==3:
+        for i in range (2):
+            if anc[i]!=l[i]:
+                test=False
+    fic.close()
+    return test
 
-t=alerte()
-if (t==True):
-    recupalerte()
+def faille():
+    t=alerte()
+    print(t)
+    bool=recupalerte(t)
+    if bool==True:
+        print("alerte non traite")
+        fic = open('alerte.txt', 'w')
+        fic.write(t[0]+"\n")
+        fic.write(t[1]+"\n")
+        fic.write(t[2]+"\n")
+        fic.close()
+        mail(t)
+    else :
+        print("alerte deja traite")
     #mail()
 #import platform
 #import os
