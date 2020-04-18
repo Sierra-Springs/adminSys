@@ -16,6 +16,7 @@ import urllib.request
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os  # NL : for env var
 
 def mail(liste):
     txt="Alerte datant du "+liste[0]+" affectant "+liste[1]+". En savoir plus : "+liste[2]
@@ -114,7 +115,8 @@ def alerte():
 
 def recupalerte(l):
     test=True
-    fic = open('alerte.txt', 'r')
+    print(os.environ['PyRes']+'/alerte.txt')
+    fic = open(os.environ['PyRes']+'/alerte.txt', 'r')  # NL (env var added otherwise : "alert.txt not found")
     anc=[]
     for line in fic:
         anc.append(line)
@@ -131,7 +133,7 @@ def faille():
     bool=recupalerte(t)
     if bool==True:
         print("alerte non traite")
-        fic = open('alerte.txt', 'w')
+        fic = open(os.environ['PyRes']+'/alerte.txt', 'w')
         fic.write(t[0]+"\n")
         fic.write(t[1]+"\n")
         fic.write(t[2]+"\n")

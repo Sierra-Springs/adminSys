@@ -1,0 +1,16 @@
+echo $1 >> ./testtransfert1
+
+if [[ `cat $Data/transfert_table.smph` = "updated" ]]
+then
+	echo "new" > $Data/transfert_table.smph
+fi
+
+
+if [[ `cat $Data/transfert_table.smph` == "new" ]]
+then
+	echo "transfert"
+	echo "transfer attempt" > $Data/transfert_table.smph
+	scp -P$port -i $RSA_KEY/RSA_KEY_PI $BDD_Path $username@$ip:$dest_transfert && echo "transfered" > $Data/transfert_table.smph
+else
+	echo "nothing to do"
+fi
