@@ -7,7 +7,6 @@
 import os
 import sys
 sys.path.append(os.environ['PyRes'])  # NL : allow import for modules in PyRes (sonde, stockage, ...)
-
 from sonde import *
 from stockage import *
 

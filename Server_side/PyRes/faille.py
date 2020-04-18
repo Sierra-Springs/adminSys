@@ -13,29 +13,8 @@
 
 import time
 import urllib.request
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import os  # NL : for env var
-
-def mail(liste):
-    txt="Alerte datant du "+liste[0]+" affectant "+liste[1]+". En savoir plus : "+liste[2]
-    sub="Alerte : "+liste[0]+ " : "+liste[1]
-    exp="bert.audran@gmail.com"
-    #dest="audran.bert@hotmail.fr"
-    dest="nathanael-1999@hotmail.fr"
-    mdp="lol"
-    msg=MIMEMultipart()
-    msg['From']=exp
-    msg['To']=dest
-    msg['Subject']=sub
-    msg.attach(MIMEText(txt))
-    mail = smtplib.SMTP('smtp.gmail.com', 587)
-    mail.starttls()
-    mail.login(exp, mdp)
-    mail.sendmail(exp, dest, msg.as_string())
-    mail.quit()
-    print("Mail envoyé")
+from mail import *
 
 def alerte():
     ct=0
@@ -115,8 +94,8 @@ def alerte():
 
 def recupalerte(l):
     test=True
-    print(os.environ['PyRes']+'/alerte.txt')
-    fic = open(os.environ['PyRes']+'/alerte.txt', 'r')  # NL (env var added otherwise : "alert.txt not found")
+    print(os.environ['Stockage']+'/alerte.txt')
+    fic = open(os.environ['Stockage']+'/alerte.txt', 'r')  # NL (env var added otherwise : "alert.txt not found")
     anc=[]
     for line in fic:
         anc.append(line)
@@ -127,20 +106,28 @@ def recupalerte(l):
     fic.close()
     return test
 
+def faillemail(alert):
+    mail=[]
+    mail.append("Alerte : "+liste[0]+ " : "+liste[1])
+    mail.append("Alerte datant du "+liste[0]+" affectant "+liste[1]+". En savoir plus : "+liste[2])
+    return mail
+
 def faille():
     t=alerte()
     print(t)
     bool=recupalerte(t)
     if bool==True:
         print("alerte non traite")
-        fic = open(os.environ['PyRes']+'/alerte.txt', 'w')
+        fic = open(os.environ['Stockage']+'/alerte.txt', 'w')
         fic.write(t[0]+"\n")
         fic.write(t[1]+"\n")
         fic.write(t[2]+"\n")
         fic.close()
-        mail(t)
+        m=faillemail(t)
+        mail(m)
     else :
         print("alerte deja traite")
+
     #mail()
 #import platform
 #import os
