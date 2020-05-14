@@ -15,7 +15,7 @@ import time
 import os  # NL : for env var
 import pygal
 
-def graphique(liste,donnes):
+def graphpygal(liste,donnes):
     line_chart = pygal.Line()
     line_chart.title = liste[0]
     line_chart.x_labels = map(str, range(liste[1], liste[2]))
@@ -25,7 +25,7 @@ def graphique(liste,donnes):
         line_chart.add(liste[i], donnes[y])
         y=y+1
     line_chart.render()
-    line_chart.render_to_file('graph.svg')
+    line_chart.render_to_file(os.environ['Stockage']+'/graph.svg')
     print("graphe termine")
 
 #exemple :
