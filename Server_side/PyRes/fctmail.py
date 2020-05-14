@@ -15,7 +15,7 @@ import time
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.MIMEBase import MIMEBase
+#from email.MIMEBase import MIMEBase
 import os  # NL : for env var
 
 def fctmail(liste):
