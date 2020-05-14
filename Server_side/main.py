@@ -5,7 +5,7 @@ import sys
 sys.path.append(os.environ['PyRes'])  # NL : allow import for modules in PyRes (sonde, stockage, ...)
 sys.path.append(os.environ['Stockage'])
 
-from mail import *
+from fctmail import *
 from faille import *
 from suppression_ancienne import *
 from graphique import *
