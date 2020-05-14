@@ -14,6 +14,7 @@
 import time
 import os  # NL : for env var
 import pygal
+from fctmail import *
 
 def graphpygal(liste,donnes):
     line_chart = pygal.Line()

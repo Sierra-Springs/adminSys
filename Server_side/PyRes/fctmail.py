@@ -18,7 +18,7 @@ from email.mime.text import MIMEText
 from email.MIMEBase import MIMEBase
 import os  # NL : for env var
 
-def mail(liste):
+def fctmail(liste):
     sub=liste[0]
     txt=liste[1]
     exp="bert.audran@gmail.com"

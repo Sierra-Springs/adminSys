@@ -13,8 +13,9 @@
 
 import time
 import urllib.request
+from fctmail import *
 import os  # NL : for env var
-from mail import *
+
 
 def alerte():
     ct=0
