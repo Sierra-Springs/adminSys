@@ -118,7 +118,7 @@ def faille():
     bool=recupalerte(t)
     if bool==True:
         print("alerte non traite")
-        fic = open(os.environ['Stockage']+'/alerte.txt', 'w')
+        fic = open(os.environ['Stockage']+'/alerte.txt', 'a')
         fic.write(t[0]+"\n")
         fic.write(t[1]+"\n")
         fic.write(t[2]+"\n")
