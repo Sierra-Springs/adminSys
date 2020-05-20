@@ -1,5 +1,5 @@
 # in sqlite3 :
-# CREATE TABLE ram(id, ramTotal, ramUsed, ramFree, ramShared, ramBuffers, ramCached);
+# CREATE TABLE ram(id_machine, id, ramTotal, ramUsed, ramFree, ramShared, ramBuffers, ramCached);
 
 id=$1
 ramData="`free -h | head -2 | tail -1`"
@@ -12,4 +12,4 @@ ramCached="`echo $ramData | cut -d' ' -f7`"
 
 echo Total: $ramTotal Used: $ramUsed Free: $ramFree Shared: $ramShared Buffers: $ramBuffers Cached: $ramCached
 echo ${MainPath}/By_NL/machineData.db
-echo "insert into ram values(\"$id\", \"$ramTotal\", \"$ramUsed\", \"$ramFree\", \"$ramShared\", \"$ramBuffers\", \"$ramCached\");" | sqlite3 $BDD_Path
+echo "insert into ram values(\"$hostname\", \"$id\", \"$ramTotal\", \"$ramUsed\", \"$ramFree\", \"$ramShared\", \"$ramBuffers\", \"$ramCached\");" | sqlite3 $BDD_Path

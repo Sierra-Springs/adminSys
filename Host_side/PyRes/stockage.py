@@ -16,20 +16,20 @@ import os
 
 
 def stockcpu(L,c,id1):
-	c.execute("INSERT INTO cpu VALUES  (?,?,?,?,?)",(id1,L[0],L[1],L[2],L[3]))
+	c.execute("INSERT INTO cpu VALUES  (?,?,?,?,?,?)",(os.environ['hostname'], id1, L[0], L[1], L[2], L[3]))
 
 def stockdisk(L,c,id1):
-	c.execute("INSERT INTO disk VALUES  (?,?,?,?,?)",(id1,L[0],L[1],L[2],L[3]))
+	c.execute("INSERT INTO disk VALUES  (?,?,?,?,?,?)",(os.environ['hostname'], id1, L[0], L[1], L[2], L[3]))
 
 def stockproc(L,c,id1):
-	c.execute("INSERT INTO proc VALUES  (?,?)",(id1,L))
+	c.execute("INSERT INTO proc VALUES  (?,?,?)",(os.environ['hostname'], id1, L))
 
 def stockusers(L,c,id1):
-	c.execute("INSERT INTO users VALUES  (?,?)",(id1,L))
+	c.execute("INSERT INTO users VALUES  (?,?,?)",(os.environ['hostname'], id1, L))
 
 def stocktemps(L,c,id1):
 	#c.execute("INSERT INTO temps VALUES  (?,?,?,?)",(id1,L[0],L[1],L[2]))
-	c.execute("INSERT INTO temps VALUES  (?,?)",(id1,L))
+	c.execute("INSERT INTO temps VALUES  (?,?,?)",(os.environ['hostname'], id1, L))
 
 def stock(L,id1):  # NL : stock(L,nbdd,id1)
 	# NL : RAM added in main.sh
