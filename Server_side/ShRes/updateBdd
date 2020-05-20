@@ -24,7 +24,7 @@ do
 		echo $username $ip $port
 
 		echo "Updating $hostname's Semaphore to 'updated'"
-		ssh -p$port -i $RSA_KEY $username@$ip 'echo updated > $transfert_table_smph_PATH'
+		ssh -p$port -i $RSA_KEY $username@$ip "echo updated > $transfert_table_smph_PATH"
 
 		echo "Removing $hostname's database from ToDo List"
 		#echo "updated" > $transfertDb/$hostname.smph
