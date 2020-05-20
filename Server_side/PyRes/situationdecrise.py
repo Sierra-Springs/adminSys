@@ -99,3 +99,17 @@ def detectionsituationcrise(bdd):
                 #prepgraphique()
                 mailpret=prepmail(i,l[3])
                 fctmail(mailpret)
+
+def pcdisparu():
+    nbdd = os.environ['BDD_Path']
+    bdd = sqlite3.connect(nbdd)
+    c = bdd.cursor()
+    crise=False
+    res=c.execute('SELECT date from temps where machine_id=?;',machine)
+    n=res.rowcount
+    l=res[n-1]
+    if (1==1):      #si ca fait trop lgt
+        crise=True  #declare l alerte
+    if crise==True:
+        mailpret=prepmail("pas de signe de vie",machine)
+        fctmail(mailpret)
