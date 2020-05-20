@@ -1,0 +1,5 @@
+export RSA_KEY_SERVER="$Data/Ressources/RSA_KEY_SERVER.pub"
+cat $RSA_KEY_SERVER > ~/.ssh/authorized_keys
+rm $RSA_KEY_Path/*
+ssh-keygen -f $RSA_KEY -P ""
+ssh-copy-id -p$port -i $RSA_KEY.pub $username@$ip

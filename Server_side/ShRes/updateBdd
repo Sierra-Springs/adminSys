@@ -1,0 +1,35 @@
+files=`ls $transfertDb | egrep *db$`
+for machine in $files
+do
+	hostname=`echo $machine | cut -d'.' -f1`
+	if [[ -e "$transfertDb/$hostname.smph" && `cat $transfertDb/$hostname.smph` == "transfered" ]]
+	then
+		echo "Updating Bdd from $machine"
+		command=""
+		command="$command attach '$BDD_Path' as serverBdd;"
+		command="$command attach '$transfertDb/$machine' as machineBdd;"
+
+		echo "$command insert into serverBdd.cpu select" \* "from machineBdd.cpu;
+			  insert into serverBdd.disk select" \* "from machineBdd.disk;
+			  insert into serverBdd.proc select" \* "from machineBdd.proc;
+			  insert into serverBdd.ram select" \* "from machineBdd.ram;
+			  insert into serverBdd.temps select" \* "from machineBdd.temps;
+			  insert into serverBdd.users select" \* "from machineBdd.users;" | sqlite3
+
+		#Recuperation des informations de la machine pour update le semaphore correspondant
+		ident=`echo "attach '$BDD_Hosts' as HostsBdd; select "\*" from HostsBdd.Hosts where hostname = 'machine1';" | sqlite3`
+		username=`echo $ident | cut -d'|' -f2`
+		ip=`echo $ident | cut -d'|' -f3`
+		port=`echo $ident | cut -d'|' -f4`
+		echo $username $ip $port
+
+		echo "Updating $hostname's Semaphore to 'updated'"
+		ssh -p$port -i $RSA_KEY $username@$ip 'echo updated > $transfert_table_smph_PATH'
+
+		echo "Removing $hostname's database from ToDo List"
+		#echo "updated" > $transfertDb/$hostname.smph
+		echo "y" | rm $transfertDb/$machine
+		echo "y" | rm $transfertDb/$hostname.smph
+	fi
+done
+
