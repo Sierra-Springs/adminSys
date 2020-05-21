@@ -14,8 +14,9 @@ cputable=["freq","freqmin","freqmax","percent"]
 proctable=["nbproc"]
 userstable=["nbusers"]
 tempstable=["date"]
+affhisto=0
 
-def prepgraph(l,lc,lg):
+def prepgraphterminal(l,lc,lg):
     liste=[]
     donnees=[]
     for j in range (0,len(lg[0])):
@@ -28,7 +29,7 @@ def prepgraph(l,lc,lg):
             donnnes[j].append(lg(i))
     return liste,donnees
 
-def prepmail(pc,table):
+def prepmailterminal(pc,table):
     liste=[]
     liste.append(pc)
     liste.append(table)
@@ -38,8 +39,9 @@ def prepmail(pc,table):
 
 def afficheterminal():
     pc=(input("Pour quels PCs voulez vous afficher des informations"))
-    #histo=string(input("Quelle taille d'historique voulez-vous"))
     table=(input("Quelles tables de la base de données voulez-vous afficher"))
+    affhisto=(input("Combien de données voulez-vous récupérer (0=toutes)?"))
+    ct=0
     graph="non"
     if (table!="toutes" and pc!="tous"):
         graph=(input("Voulez-vous générer un graphique"))
@@ -55,8 +57,11 @@ def afficheterminal():
             nbdd = os.environ['BDD_Path']
             bdd = sqlite3.connect(nbdd)
             c = bdd.cursor()
-            for i in c.execute('SELECT * FROM temps JOIN cpu JOIN disk JOIN proc JOIN users'):
+            for i in reversed (c.execute('SELECT * FROM temps JOIN cpu JOIN disk JOIN proc JOIN users')):
                 print(i)
+                ct=ct+1
+                if (ct>=affhisto and affhisto!=0):
+                	break
         else :
             nbdd = os.environ['BDD_Path']
             bdd = sqlite3.connect(nbdd)
@@ -65,8 +70,11 @@ def afficheterminal():
 ##            if (res.rowcount==0):
 ##                print("Cette table n'existe pas")
 ##            else :
-            for i in res:
+            for i in reversed (res):
                 print(i)
+                ct=ct+1
+                if (ct>=affhisto and affhisto!=0):
+                	break
     else :
         try:
             pc=int(pc)
@@ -76,8 +84,11 @@ def afficheterminal():
             nbdd = os.environ['BDD_Path']
             bdd = sqlite3.connect(nbdd)
             c = bdd.cursor()
-            for i in c.execute('SELECT * FROM temps JOIN cpu JOIN disk JOIN proc JOIN users where machhine_id=?',pc):
-                print(i) 
+            for i in reversed (c.execute('SELECT * FROM temps JOIN cpu JOIN disk JOIN proc JOIN users where machhine_id=?',pc)):
+                print(i)
+                ct=ct+1
+                if (ct>=affhisto and affhisto!=0):
+                	break
         else :
             stncol=""
             if table=="ram":
@@ -97,17 +108,20 @@ def afficheterminal():
             c = bdd.cursor()
             res=c.execute('SELECT ? FROM ? where id=?;',stncol,table,pc)
             nb=res.rowcount
-            for i in res:
+            for i in reversed (res):
                 print(i)
                 if (graph=="oui"):
                     lg.append()
+                ct=ct+1
+                if (ct>=affhisto and affhisto!=0):
+                	break
             if graph=="oui":
                 l.append(pc)
                 l.append(0)
                 l.append(nb)
-                liste,donnees=prepgraph(l,lc,lg)
+                liste,donnees=prepgraphterminal(l,lc,lg)
                 graphpygal(liste,donnees)
-                mailpret=prepmail(pc,table)
+                mailpret=prepmailterminal(pc,table)
                 fctmail(mailpret)
                 
             

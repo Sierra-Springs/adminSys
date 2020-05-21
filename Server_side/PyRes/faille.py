@@ -16,6 +16,7 @@ import urllib.request
 from fctmail import *
 import os  # NL : for env var
 
+
 def al(html):
     alert=[]
     date=False
@@ -124,7 +125,7 @@ def recupalerte(l):
     fic.close()
     return test,der
 
-def faillemail(liste):
+def prepmailfaille(liste):
     mail=[]
     mail.append("Alerte : "+liste[0]+ " : "+liste[1])
     mail.append("Alerte datant du "+liste[0]+" affectant "+liste[1]+". En savoir plus : "+liste[2])
@@ -144,7 +145,7 @@ def faille():
         fic.close()
         if (der==True):
             print("nouvelle alerte")
-            m=faillemail(t[0])
+            m=prepmailfaille(t[0])
             fctmail(m)
     else :
         print("pas de changement")

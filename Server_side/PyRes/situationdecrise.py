@@ -15,8 +15,9 @@ cputable=["freq","freqmin","freqmax","percent"]
 proctable=["nbproc"]
 userstable=["nbusers"]
 tempstable=["date"]
+tempscrise=10
 
-def prepmail(i,pc):
+def prepmailcrise(i,pc):
     liste=[]
     st="Probleme avec la "+i+"sur le pc"+pc
     liste.append(st)
@@ -34,19 +35,22 @@ def verificationcrise(bdd,verif,machine,nb):
     elif verif=="cpu":
         col="cpu.percent"
     add=0
-    if verif=="disk" or verif=="cpu":
-        add=95
-    else :
-        add=100
     ct=0
     if nb==1:
+        if verif=="disk" or verif=="cpu":
+            add=95
+        else :
+            add=100
+        ct=ct+1
         nbdd = os.environ['BDD_Path']
         bdd = sqlite3.connect(nbdd)
         c = bdd.cursor()
         res=c.execute('SELECT ? from ? where machine_id=?;',col,verif,machine)
-        for i in res:
+        for i in reversed (res):
             add=add+i(0)
             ct=ct+1
+            if ct>=tempscrise:
+                break
         moyenne=add/ct
         if moyenne>=95:
             crise=True
@@ -56,9 +60,11 @@ def verificationcrise(bdd,verif,machine,nb):
         bdd = sqlite3.connect(nbdd)
         c = bdd.cursor()
         res=c.execute('SELECT ? from ? where machine_id=?;',col,verif,machine)
-        for i in res:
+        for i in reversed (res):
             add=add+i(0)
             ct=ct+1
+            if ct>=tempscrise:
+                break
         c.close()
         nbdd = os.environ['BDD_Path']
         bdd = sqlite3.connect(nbdd)
@@ -67,6 +73,8 @@ def verificationcrise(bdd,verif,machine,nb):
         for i in res:
             add=add+i(0)
             ct=ct+1
+            if ct>=tempscrise:
+                break
         moyenne=add/ct
         if ((verif=="disk" or verif=="cpu") and (moyenne>=95)):
             crise=True
@@ -97,7 +105,7 @@ def detectionsituationcrise(bdd):
             crise=verificationcrise(bdd,i,l[3],nb)
             if crise==True:
                 #prepgraphique()
-                mailpret=prepmail(i,l[3])
+                mailpret=prepmailcrise(i,l[3])
                 fctmail(mailpret)
 
 def pcdisparu():
@@ -111,5 +119,5 @@ def pcdisparu():
     if (1==1):      #si ca fait trop lgt
         crise=True  #declare l alerte
     if crise==True:
-        mailpret=prepmail("pas de signe de vie",machine)
+        mailpret=prepmailcrise("pas de signe de vie",machine)
         fctmail(mailpret)
