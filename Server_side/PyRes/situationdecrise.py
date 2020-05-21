@@ -15,7 +15,13 @@ cputable=["freq","freqmin","freqmax","percent"]
 proctable=["nbproc"]
 userstable=["nbusers"]
 tempstable=["date"]
+
+#Critere situation de crise
 tempscrise=10
+ramcrise=100
+cpucrise=95
+diskcrise=95
+#fin
 
 def prepmailcrise(i,pc):
     liste=[]
@@ -76,9 +82,11 @@ def verificationcrise(bdd,verif,machine,nb):
             if ct>=tempscrise:
                 break
         moyenne=add/ct
-        if ((verif=="disk" or verif=="cpu") and (moyenne>=95)):
+        if (verif=="disk" and (moyenne>=95):
             crise=True
-        elif verif=="ram" and moyenne<=100:
+        elif (verif=="cpu" and moyenne>=cpucrise):
+            crise=True
+        elif (verif=="ram" and moyenne<=ramcrise):
             crise=True
         c.close()
     return crise
@@ -93,11 +101,11 @@ def detectionsituationcrise(bdd):
     l=[]
     for i in res[nb-1]:  #ajout de tt les resultats de la derniere ligne dans une liste pour check si pas de pb
         l.append(i)
-    if l[0]>95:
+    if (l[0]>=cpucrise):
         potentielcrise.append("cpu")
-    if l[1]>95:
+    if (l[1]>=diskcrise):
         potentielcrise.append("disk")
-    if l[2]<100:
+    if (l[2]=<ramcrise):
         potentielcrise.append("ram")
     c.close()
     if (len(potentielcrise)>0):

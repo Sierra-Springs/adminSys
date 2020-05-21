@@ -25,25 +25,28 @@ def fctmail(liste):
     #dest="audran.bert@hotmail.fr"
     dest="nathanael-1999@hotmail.fr"
     mdp="lol"
-    msg=MIMEMultipart()
-    msg['From']=exp
-    msg['To']=dest
-    msg['Subject']=sub
-    msg.attach(MIMEText(txt))
-    if len(liste)==4: #piece jointe
-        fichier=liste[3]
-        piece=open(liste[4],"rb")
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload((piece).read())
-        encoders.encode_base64(part)
-        part.add_header('Content-Disposition', "piece; filename= %s" % fichier)
-        msg.attach(part)
-    mail = smtplib.SMTP('smtp.gmail.com', 587)
-    mail.starttls()
-    mail.login(exp, mdp)
-    mail.sendmail(exp, dest, msg.as_string())
-    mail.quit()
-    print("Mail envoyé")
+    if (mdp!="lol"):
+        msg=MIMEMultipart()
+        msg['From']=exp
+        msg['To']=dest
+        msg['Subject']=sub
+        msg.attach(MIMEText(txt))
+        if len(liste)==4: #piece jointe
+            fichier=liste[3]
+            piece=open(liste[4],"rb")
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload((piece).read())
+            encoders.encode_base64(part)
+            part.add_header('Content-Disposition', "piece; filename= %s" % fichier)
+            msg.attach(part)
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+        mail.starttls()
+        mail.login(exp, mdp)
+        mail.sendmail(exp, dest, msg.as_string())
+        mail.quit()
+        print("Mail envoyé")
+    else :
+        print("Pas de mot de passe pour envoyer le mail")
 
     #mail()
 #import platform

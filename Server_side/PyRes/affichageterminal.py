@@ -67,9 +67,6 @@ def afficheterminal():
             bdd = sqlite3.connect(nbdd)
             c = bdd.cursor()
             res=c.execute('SELECT * FROM ? ;',table)
-##            if (res.rowcount==0):
-##                print("Cette table n'existe pas")
-##            else :
             for i in reversed (res):
                 print(i)
                 ct=ct+1
@@ -84,7 +81,7 @@ def afficheterminal():
             nbdd = os.environ['BDD_Path']
             bdd = sqlite3.connect(nbdd)
             c = bdd.cursor()
-            for i in reversed (c.execute('SELECT * FROM temps JOIN cpu JOIN disk JOIN proc JOIN users where machhine_id=?',pc)):
+            for i in reversed (c.execute('SELECT * FROM temps JOIN cpu JOIN disk JOIN proc JOIN users where machine_id=?',pc)):
                 print(i)
                 ct=ct+1
                 if (ct>=affhisto and affhisto!=0):
@@ -106,7 +103,7 @@ def afficheterminal():
             nbdd = os.environ['BDD_Path']
             bdd = sqlite3.connect(nbdd)
             c = bdd.cursor()
-            res=c.execute('SELECT ? FROM ? where id=?;',stncol,table,pc)
+            res=c.execute('SELECT ? FROM ? where machine_id=?;',stncol,table,pc)
             nb=res.rowcount
             for i in reversed (res):
                 print(i)
@@ -118,7 +115,7 @@ def afficheterminal():
             if graph=="oui":
                 l.append(pc)
                 l.append(0)
-                l.append(nb)
+                l.append(ct)
                 liste,donnees=prepgraphterminal(l,lc,lg)
                 graphpygal(liste,donnees)
                 mailpret=prepmailterminal(pc,table)
