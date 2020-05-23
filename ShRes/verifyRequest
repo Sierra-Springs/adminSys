@@ -1,0 +1,72 @@
+files=`ls $transfertRequest | egrep *req$`
+for request in $files
+do
+	hostnameReq=`cat $transfertRequest/$request | cut -d'|' -f1` # the machine_id
+	smphContent=`cat $transfertRequest/$request.smph`
+	if [ -e "$transfertRequest/$request.smph" ]
+	then
+		if [[ $smphContent == "new_request" || $smphContent == "force_request" ]]
+		then
+			usernameReq=`cat $transfertRequest/$request | cut -d'|' -f2`
+			ipReq=`cat $transfertRequest/$request | cut -d'|' -f3`
+			portReq=`cat $transfertRequest/$request | cut -d'|' -f4`
+			MainPathReq=`cat $transfertRequest/$request | cut -d'|' -f5`
+			lastIdNumReq=`cat $transfertRequest/$request | cut -d'|' -f6`
+
+			if [ $smphContent == 'new_request' ]
+			then
+				echo "New Registration Request"
+
+				command="attach '$BDD_Hosts' as HostsBdd;"
+				result=`echo "$command; select * from HostsBdd.hosts where machine_id=\"$hostnameReq\"" | sqlite3`
+				if [[ `echo $result | cut -d'|' -f1` != $hostnameReq ]]
+				then
+					updateHost='ok'
+					msg="New host added : $hostnameReq"
+					msgToHost="request_validated|$msg|CaseCreated"
+				else # (Si le hostnameReq est déjà dans la base)
+					usernamePrec=`echo $result | cut -d'|' -f2`
+					ipPrec=`echo $result | cut -d'|' -f3`
+					portPrec=`echo $result | cut -d'|' -f4`
+					MainPathPrec=`echo $result | cut -d'|' -f5`
+					lastIdNumPrec=`echo $result | cut -d'|' -f6`
+
+					if [[ $usernameReq == $usernamePrec && $ipReq == $ipPrec && $portReq == $portPrec && $MainPathReq == $MainPathPrec && $lastIdNumReq == $lastIdNumPrec ]]
+					then
+						updateHost='no'
+						msg="Host $hostnameReq already Registered"
+						msgToHost="request_validated|$msg|CaseAlreadyRegistered"
+					else
+						updateHost='no'
+						msg="Host $hostnameReq already exist"
+						msgToHost="request_rejected|$msg|CaseAlreadyExist"
+					fi
+				fi
+			else
+				echo "Update host Request"
+
+				updateHost='ok'
+				msg="host $hostnameReq updated"
+				msgToHost="request_validated|$msg|CaseUpdated"
+			fi
+
+			if [ $updateHost == 'ok' ]
+			then
+				echo "Updating hosts"
+
+				command="attach '$BDD_Hosts' as HostsBdd;"
+				command="$command delete from HostsBdd.hosts where HostsBdd.hosts.machine_id=\"$hostnameReq\";"
+				command="$command insert into HostsBdd.hosts values(\"$hostnameReq\", \"$usernameReq\", \"$ipReq\", \"$portReq\", \"$MainPathReq\", \"$lastIdNumReq\");"
+				echo $command | sqlite3
+			fi
+			echo "Updating $hostnameReq's Semaphore to \'$msgToHost\'"
+			ssh -p$portReq -i $RSA_KEY $usernameReq@$ipReq "echo \"$msgToHost\" > $MainPathReq/data/register.smph"
+
+			echo $msg
+
+			echo 'y' | rm "$transfertRequest/$request"
+			echo 'y' | rm "$transfertRequest/$request.smph"
+		fi
+	fi
+done
+

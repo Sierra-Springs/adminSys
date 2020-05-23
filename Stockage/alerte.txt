@@ -1,0 +1,12 @@
+4 mai 2020
+Multiples vulnérabilités dans  SaltStack
+/pdf/CERTFR-2020-ALE-012.pdf
+22 avril 2020
+Multiples vulnérabilités dans les produits Microsoft qui utilisent la bibliothèque Autodesk FBX
+/pdf/CERTFR-2020-ALE-011.pdf
+24 mars 2020
+Multiples vulnérabilités dans Microsoft Windows
+/pdf/CERTFR-2020-ALE-009.pdf
+11 mars 2020
+Vulnérabilité dans l’implémentation du protocole SMB par Microsoft
+/pdf/CERTFR-2020-ALE-008.pdf
