@@ -1,0 +1,3 @@
+#psql "postgresql://bdduser:Slitheen@localhost/monitoring" -c"select machine_id from infomachine;"
+echo "select * from ram;" | sqlite3 /home/pi/Documents/adminSys/machineData.db
+/Volumes/pi/Documents/adminSys/Commande/monitoringTest/Volumes/pi/Documents/adminSys/Commande/pushovers

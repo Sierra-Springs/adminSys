@@ -1,0 +1,2 @@
+mdir /media/sf_partage
+mount -t vboxsf partage /media/sf_partage

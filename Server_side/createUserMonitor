@@ -1,0 +1,54 @@
+existMonitor=0
+for user in `cat /etc/passwd | cut -d':' -f1`
+do
+	if [ $user == "monitor" ]
+	then
+		existMonitor=1
+		break
+	fi
+done
+
+
+if [ $existMonitor == 1 ]
+then
+	echo "L'utilisateur monitor existe deja."
+	echo "pouvons-nous utiliser cet user pour notre programme ? (y/n) : "
+	while [[ $answer != 'y' && $answer != 'n' ]]
+	do
+		read answer
+		if [[ $answer != 'y' && $answer != 'n' ]]
+		then
+			echo 'Veuillez répondre par "y" pour "oui" ou "n" pour "non" :  '
+		fi
+	done
+	if [ $answer == 'y' ]
+	then
+		popHomeOk=''
+		echo "Cela supprimera le contenu de /home/monitor"
+		echo "Cette action est irreverssible"
+		echo "Etes-vous sûr de vouloir continuer ? (y/n) : "
+		while [[ $popHomeOk != 'y' && $popHomeOk != 'n' ]]
+		do
+			read popHomeOk
+			if [[ $popHomeOk != 'y' && $popHomeOk != 'n' ]]
+			then
+				echo 'Veuillez répondre par "y" pour "oui" ou "n" pour "non" :  '
+			fi
+		done
+	fi
+else
+	echo -e "\033[32mCreation de l'user monitor\033[0m"
+	sudo useradd monitor --home /home/monitor/ --create-home && sudo passwd monitor
+	popHomeOk='y'
+fi
+
+echo $popHomeOk
+if [ $popHomeOk == 'y' ]
+then
+	sudo rm -r /home/monitor/* ;
+	sudo cp -r ./* /home/monitor/ && sudo mkdir -p /home/monitor/.ssh && sudo touch /home/monitor/.ssh/authorized_keys && sudo touch /home/monitor/exec.tmp && sudo chmod -R 777 /home/monitor/transfert_db /home/monitor/data /home/monitor/data/Data.db /home/monitor/data/Hosts.db /home/monitor/exec.tmp /home/monitor/data/RSA_KEY /home/monitor/transfertRequest && sudo chmod 700 /home/monitor/.ssh && sudo chmod 600 /home/monitor/.ssh/authorized_keys && sudo chown -R monitor:monitor /home/monitor/.ssh && echo -e "\033[32mDone\033[0m"
+
+else
+	echo -e "\033[31mNous avons besoin de l'user monitor. Pourriez-vous remédier à cela ?\033[0m"
+	echo -e "\033[31mChanger le nom de l'utilisateur monitor ou sauvegardez /home/monitor/* dans le cas d'un test temporaire\033[0m"
+fi
