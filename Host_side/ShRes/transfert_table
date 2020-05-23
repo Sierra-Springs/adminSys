@@ -5,13 +5,19 @@ then
 	echo "new" > $Data/transfert_table.smph
 fi
 
-
+deleteTable=0
 if [[ `cat $Data/transfert_table.smph` == "new" ]]
 then
 	echo "transfert"
 	echo "transfer attempt" > $Data/transfert_table.smph
-	scp -P$port -i $RSA_KEY $BDD_Path $username@$ip:$dest_transfert && echo "transfered" > $Data/transfert_table.smph
+	scp -P$port -i $RSA_KEY $BDD_Path $username@$ip:$dest_transfert && echo "transfered" > $Data/transfert_table.smph && deleteTable=1
 	ssh -p$port -i $RSA_KEY $username@$ip "echo transfered > $dest_transfert/$hostname.smph"
 else
 	echo "nothing to do"
+fi
+
+
+if [ $deleteTable == 1 ]
+then
+	$ShRes/EmptyDatabase
 fi

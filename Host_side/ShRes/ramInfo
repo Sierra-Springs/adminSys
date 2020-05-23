@@ -12,4 +12,4 @@ ramCached="`echo $ramData | cut -d' ' -f7`"
 
 echo Total: $ramTotal Used: $ramUsed Free: $ramFree Shared: $ramShared Buffers: $ramBuffers Cached: $ramCached
 echo ${MainPath}/By_NL/machineData.db
-echo "insert into ram values(\"$hostname\", \"$id\", \"$ramTotal\", \"$ramUsed\", \"$ramFree\", \"$ramShared\", \"$ramBuffers\", \"$ramCached\");" | sqlite3 $BDD_Path
+echo "insert into ram values(\"$hostname\", $id, \"$ramTotal\", \"$ramUsed\", \"$ramFree\", \"$ramShared\", \"$ramBuffers\", \"$ramCached\");" | sqlite3 $BDD_Path

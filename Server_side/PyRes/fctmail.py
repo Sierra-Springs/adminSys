@@ -15,12 +15,13 @@ import time
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-#from email.MIMEBase import MIMEBase
+from email.mime.base import MIMEBase
+from email import encoders
 import os  # NL : for env var
 
 def fctmail(liste):
-    sub=liste[0]
-    txt=liste[1]
+    sub=str(liste[0])
+    txt=str(liste[1])
     exp="bert.audran@gmail.com"
     #dest="audran.bert@hotmail.fr"
     dest="nathanael-1999@hotmail.fr"
@@ -32,8 +33,8 @@ def fctmail(liste):
         msg['Subject']=sub
         msg.attach(MIMEText(txt))
         if len(liste)==4: #piece jointe
-            fichier=liste[3]
-            piece=open(liste[4],"rb")
+            fichier=str(liste[2])
+            piece=open(str(liste[3]),"rb")
             part = MIMEBase('application', 'octet-stream')
             part.set_payload((piece).read())
             encoders.encode_base64(part)

@@ -18,15 +18,16 @@ from fctmail import *
 
 def graphpygal(liste,donnes):
     line_chart = pygal.Line()
-    line_chart.title = liste[0]
+    line_chart.title = str(liste[0])
     line_chart.x_labels = map(str, range(liste[1], liste[2]))
     #line_chart.y_labels = map(str, range(liste[3], liste[4]))
     y=0
     for i in range (3,len(liste)):
-        line_chart.add(liste[i], donnes[y])
-        y=y+1
+    	line_chart.add(str(liste[i]), donnes[y])
+    	y=y+1
     line_chart.render()
-    line_chart.render_to_file(os.environ['Stockage']+'/graph.svg')
+    fic=str(os.environ['Stockage']+'/graph.svg')
+    line_chart.render_to_file(fic)
     print("graphe termine")
 
 #exemple :

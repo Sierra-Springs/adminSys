@@ -1,0 +1,64 @@
+# (environnment variable declaration)
+# ! doit être exécuté à la racine du dossier du programme de monitoring
+export MainPath=`pwd`
+export BDD_Path="$MainPath/data/Data.db"
+export BDD_Hosts="$MainPath/data/Hosts.db"
+export Data="$MainPath/data"
+export Ressources="$Data/Ressources"
+export RSA_KEY_Path="$Data/RSA_KEY"
+export RSA_KEY="$RSA_KEY_Path/RSA_KEY_SERVER"
+export ShRes="$MainPath/ShRes"
+export PyRes="$MainPath/PyRes"
+
+export transfertDb="/home/monitor/transfert_db"
+export transfertRequest="/home/monitor/transfertRequest"
+
+# Host remote var:
+export transfert_table_smph_PATH="/home/nathanael/Documents/SynchroDir/adminSysSync/Git/adminSys/Host_side/data/transfert_table.smph"
+# end conf host
+files=`ls $transfertRequest | egrep *req$`
+for request in $files
+do
+	hostnameReq=`cat $transfertRequest/$request | cut -d'|' -f1` # the machine_id
+	echo $hostnameReq
+	if [[ -e "$transfertRequest/$request.smph" && `cat $transfertRequest/$request.smph` == "new_request" ]]
+	then
+		echo "New Registration Request"
+		command="attach '$BDD_Hosts' as HostsBdd;"
+		result=`echo "$command; select * from HostsBdd.hosts where machine_id=\"$hostnameReq\"" | sqlite3`
+		if [ `echo $result | cut -d'|' -f1` != $hostnameReq ]
+		then
+			updateHost='ok'
+		else
+			updateHost='no'
+		fi
+	fi
+
+	usernameReq=`cat $transfertRequest/$request | cut -d'|' -f2`
+	ipReq=`cat $transfertRequest/$request | cut -d'|' -f3`
+	portReq=`cat $transfertRequest/$request | cut -d'|' -f4`
+	MainPathReq=`cat $transfertRequest/$request | cut -d'|' -f5`
+	lastIdNumReq=`cat $transfertRequest/$request | cut -d'|' -f6`
+
+	if [ $updateHost == 'ok' ]
+	then
+		echo "Updating host"
+
+		command="attach '$BDD_Hosts' as HostsBdd;"
+		command="$command delete from HostsBdd.hosts where HostsBdd.hosts.machine_id=\"$hostnameReq\";"
+		command="$command insert into HostsBdd.hosts values(\"$hostnameReq\", \"$usernameReq\", \"$ipReq\", \"$portReq\", \"$MainPathReq\", \"$lastIdNumReq\");"
+		echo $command | sqlite3
+
+		echo "Updating $hostname's Semaphore to 'updated'"
+		ssh -p$portReq -i $RSA_KEY $usernameReq@$ipReq "echo request_validated > $MainPathReq/data/register.smph"
+
+	else
+		echo "it is not ok"
+		echo "things are $usernameReq $ipReq $portReq $MainPathReq $lastIdNumReq"
+		ssh -p$portReq -i $RSA_KEY $usernameReq@$ipReq "echo request_rejected > $MainPathReq/data/register.smph"
+	fi
+
+	echo 'y' | rm "$transfertRequest/$request"
+	echo 'y' | rm "$transfertRequest/$request.smph"
+done
+

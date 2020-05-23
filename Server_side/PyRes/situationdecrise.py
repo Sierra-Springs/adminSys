@@ -82,7 +82,7 @@ def verificationcrise(bdd,verif,machine,nb):
             if ct>=tempscrise:
                 break
         moyenne=add/ct
-        if (verif=="disk" and (moyenne>=95):
+        if (verif=="disk" and moyenne>=95):
             crise=True
         elif (verif=="cpu" and moyenne>=cpucrise):
             crise=True
@@ -105,7 +105,7 @@ def detectionsituationcrise(bdd):
         potentielcrise.append("cpu")
     if (l[1]>=diskcrise):
         potentielcrise.append("disk")
-    if (l[2]=<ramcrise):
+    if (l[2]<=ramcrise):
         potentielcrise.append("ram")
     c.close()
     if (len(potentielcrise)>0):
