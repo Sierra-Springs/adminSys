@@ -1,9 +1,0 @@
-echo -e "\033[32mVidage de la base de donnée machine\033[0m"
-command="$command attach "\'"$BDD_Path"\'" as machineBdd;"
-
-echo "$command delete from machineBdd.cpu;
-	  delete from machineBdd.disk;
-	  delete from machineBdd.proc;
-	  delete from machineBdd.ram;
-	  delete from machineBdd.temps;
-	  delete from machineBdd.users;" | sqlite3
